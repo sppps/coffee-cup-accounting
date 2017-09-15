@@ -52,7 +52,7 @@ class ProductComponent(Base):
     __tablename__ = 'product_components'
     id = Column(Integer, primary_key=True)
     product_component_group_id = Column(Integer, ForeignKey('product_component_groups.id'))
-    product_component_group = relationship("Product")
+    product_component_group = relationship("ProductComponentGroup")
     title = Column(String(128))
     description = Column(Text)
     units = Column(String(32))
@@ -64,7 +64,7 @@ class ProductComponentSupply(Base):
     id = Column(Integer, primary_key=True)
     datetime = Column(DateTime, default=datetime.now)
     product_component_id = Column(Integer, ForeignKey('product_components.id'))
-    product_component = relationship("Product")
+    product_component = relationship("ProductComponent")
     price = Column(Float)
     amount = Column(Float)
 
