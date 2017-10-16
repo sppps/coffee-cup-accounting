@@ -1,48 +1,61 @@
 #!/usr/bin/env python2.7
-import models
-from flask import Flask, render_template, request, redirect, url_for
-from flask_login import LoginManager, login_required, login_user, logout_user
-from flask_sqlalchemy import SQLAlchemy
+import bson
+import users
+import users.login
+import database
+import supply
+import techmaps
+import ingredients
+import consume
+import consumers
+from flask import Flask, render_template
+from flask_login import LoginManager, login_required
+
+from werkzeug.routing import BaseConverter, ValidationError
+from itsdangerous import base64_encode, base64_decode
+from bson.objectid import ObjectId
+from bson.errors import InvalidId
+
+
+class ObjectIDConverter(BaseConverter):
+    def to_python(self, value):
+        try:
+            return ObjectId(base64_decode(value))
+        except (InvalidId, ValueError, TypeError):
+            raise ValidationError()
+
+    def to_url(self, value):
+        return base64_encode(value.binary)
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
+    app.url_map.converters['ObjectId'] = ObjectIDConverter
 
-    db = SQLAlchemy(app)
-    app.config['db'] = db
+    database.init_app(app)
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'users.login'
 
     @login_manager.user_loader
     def load_user(user_id):
-        return db.session.query(models.User).get(user_id)
+        db = app.config['db']
+        return users.login.User.find(db, _id=bson.ObjectId(user_id))
 
     @app.route('/')
     @login_required
     def home():
         return render_template('home.html')
 
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        if request.method == 'POST':
-            user = db.session.query(models.User) \
-                             .filter(models.User.username == request.form.get('username')).first()
-            if user is None:
-                return render_template('login.html', error='Invalid username')
-            if not user.check_password(request.form.get('password')):
-                return render_template('login.html', error='Invalid password')
-            login_user(user)
-            return redirect(request.args.get('next') or url_for('home'))
-        return render_template('login.html')
-
-    @app.route('/logout')
-    @login_required
-    def logout():
-        logout_user()
-        return redirect(url_for('home'))
+    app.register_blueprint(users.login.create_blueprint())
+    app.register_blueprint(consume.create_blueprint(), url_prefix="/consume")
+    app.register_blueprint(consumers.create_blueprint(), url_prefix="/consumers")
+    app.register_blueprint(supply.create_blueprint(), url_prefix="/supply")
+    app.register_blueprint(ingredients.create_blueprint(), url_prefix="/ingredients")
+    app.register_blueprint(techmaps.create_blueprint(), url_prefix="/techmaps")
+    app.register_blueprint(users.create_blueprint(), url_prefix="/users")
 
     return app
 

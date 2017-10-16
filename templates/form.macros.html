@@ -1,0 +1,43 @@
+
+{% macro render_string_field(field) %}
+    <div class="form-group">
+        <label>{{ field.label.text }}</label>
+        <input class="form-control {% if field.errors %}is-invalid{% endif %}"
+            placeholder="{{ field.label.text }}"
+            value="{{ field.data or '' }}"
+            name="{{ field.name }}"
+            autocomplete="off"
+            autofocus="yes">
+        {% for e in field.errors %}
+        <div class="invalid-feedback">
+            {{ e }}
+        </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro render_float_field(field) %}
+    <div class="form-group">
+        <label>{{ field.label.text }}</label>
+        <input class="form-control {% if field.errors %}is-invalid{% endif %}"
+            placeholder="{{ field.label.text }}"
+            value="{{ field.data or '' }}"
+            name="{{ field.name }}"
+            autocomplete="off"
+            autofocus="yes">
+        {% for e in field.errors %}
+        <div class="invalid-feedback">
+            {{ e }}
+        </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro render_field(field) %}
+    {% if field.type == 'StringField' %}
+        {{ render_string_field(field) }}
+    {% endif %}
+    {% if field.type == 'FloatField' %}
+        {{ render_float_field(field) }}
+    {% endif %}
+{% endmacro %}

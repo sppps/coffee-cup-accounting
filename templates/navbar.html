@@ -1,21 +1,33 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="{{ url_for('home') }}">{{ config.PROJECT_NAME }}</a>
+    <a class="navbar-brand" href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='img/coffee-256.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+        {{ config.PROJECT_NAME }}
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="">Заварка кофе</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="">Закупка</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="">Участники</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('consume.home') }}">Расход</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('logout') }}">
+                <a class="nav-link" href="{{ url_for('ingredients.home') }}">Ингредиенты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('supply.home') }}">Закупка</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('techmaps.home') }}">Технологические карты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('consumers.home') }}">Потребители</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('users_editor.home') }}">Пользователи</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('users.logout') }}">
                     <i class="fa fa-sign-out"></i>&nbsp;Выход
                 </a>
             </li>

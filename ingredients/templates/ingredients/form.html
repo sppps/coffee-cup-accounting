@@ -1,0 +1,28 @@
+{% extends base_template %}
+{% block content %}
+    {% import 'form.macros.html' as macros %}
+    <h2>Новый ингредиент</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        {{ macros.render_field(form.category) }}
+        {{ macros.render_field(form.name) }}
+        <div class="form-group row">
+            <div class="col-12">
+                <label>Единицы измерения</label>
+            </div>
+            <div class="col-3">
+                <select class="form-control" name="units">
+                    <option {% if form.units.data == 'грамм' %}selected{% endif %}>грамм</option>
+                    <option {% if form.units.data == 'литров' %}selected{% endif %}>литров</option>
+                    <option {% if form.units.data == 'штук' %}selected{% endif %}>штук</option>
+                </select>
+                {% for e in form.units.errors %}
+                <div class="invalid-feedback">
+                    {{ e }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+{% endblock %}

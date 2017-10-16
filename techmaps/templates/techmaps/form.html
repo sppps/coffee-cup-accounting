@@ -1,0 +1,99 @@
+{% extends base_template %}
+{% block content %}
+    {% macro render_ingredient(form, index='%index%', subform=None) %}
+        <div class="form-group row">
+            <div class="col-6">
+                <select class="form-control"
+                    placeholder="Категория"
+                    value=""
+                    name="ingredients-{{ index }}-ingredient_id"
+                    autocomplete="off">
+                    <option value=""></option>
+                {% for i in form.all_ingredients %}
+                    <option value="{{ i._id }}" {% if subform and subform.ingredient_id.data|string == i._id|string %}selected{% endif %}>{{ i.category }} / {{ i.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <input class="form-control"
+                    value="{% if subform %}{{ subform.amount.data or '' }}{% endif %}"
+                    placeholder="Количество"
+                    name="ingredients-{{ index }}-amount"
+                    autocomplete="off">
+            </div>
+            <div class="col-2">
+                <select class="form-control" name="ingredients-{{ index }}-per_feed">
+                    <option value="false">на все порции</option>
+                    <option value="true" {% if subform and subform.per_feed.data %}selected{% endif %}>на одну порцию</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-outline-danger remove-ingredient" type="button">
+                    <i class="fa fa-trash"></i>&nbsp;Удалить</button>
+            </div>
+        </div>
+    {% endmacro %}
+    <h2>Новая технологическая карта</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>Категория</label>
+            <input class="form-control {% if form.category.errors %}is-invalid{% endif %}"
+                placeholder="Категория"
+                value="{{ form.category.data or '' }}"
+                name="category"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.category.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>Наименование техкарты</label>
+            <input class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                placeholder="Наименование техкарты"
+                value="{{ form.name.data or '' }}"
+                name="name"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.name.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <legend>Ингредиенты</legend>
+        <fieldset id="ingredients">
+            {% for i in form.ingredients %}
+                {{ render_ingredient(form, loop.index0, i.form) }}
+            {% endfor %}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-success add-ingredient" type="button">
+                <i class="fa fa-plus"></i>&nbsp;Добавить ингредиент</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+        <script type="x-template/text" id="ingredient-template">
+            {{ render_ingredient(form) }}
+        </script>
+{% endblock %}
+{% block js %}
+    {{ super() }}
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('button.add-ingredient').on('click', function(e){
+            e.preventDefault();
+            var html = $('#ingredient-template').html();
+            html = html.split('%index%').join($('#ingredients').children().length);
+            $('#ingredients').append(html);
+        });
+        $(document).on('click', 'button.remove-ingredient', function(e){
+            e.preventDefault();
+            $(this).parentsUntil('fieldset').remove();
+        });
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends base_template %}
+{% block content %}
+    {% import 'form.macros.html' as macros %}
+    <h2>Новый потребитель</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        {{ macros.render_field(form.name) }}
+        {{ macros.render_field(form.debt) }}
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+{% endblock %}

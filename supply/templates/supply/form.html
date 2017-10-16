@@ -1,0 +1,67 @@
+{% extends base_template %}
+{% block content %}
+    <h2>Новая закупка</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>Ингредиент</label>
+            <select class="form-control {% if form.ingredient_id.errors %}is-invalid{% endif %}"
+                name="ingredient_id"
+                autocomplete="off"
+                autofocus="yes">
+                <option value=""></option>
+            {% for i in form.all_ingredients %}
+                <option value="{{ i._id }}" {% if form.ingredient_id.data|string == i._id|string %}selected{% endif %}>{{ i.category }} / {{ i.name }} ({{ i.units }})</option>
+            {% endfor %}
+            </select>
+            {% for e in form.ingredient_id.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>Закупленное количество</label>
+            <input class="form-control {% if form.supply_amount.errors %}is-invalid{% endif %}"
+                placeholder="Закупленное количество"
+                value="{{ form.supply_amount.data or '' }}"
+                name="supply_amount"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.supply_amount.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>Остаток</label>
+            <input class="form-control {% if form.current_amount.errors %}is-invalid{% endif %}"
+                placeholder="Остаток"
+                value="{{ form.current_amount.data or '' }}"
+                name="current_amount"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.current_amount.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label>Стоимость</label>
+            <input class="form-control {% if form.price.errors %}is-invalid{% endif %}"
+                placeholder="Стоимость"
+                value="{{ form.price.data or '' }}"
+                name="price"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.price.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+{% endblock %}

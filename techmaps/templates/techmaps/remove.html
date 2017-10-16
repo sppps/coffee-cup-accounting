@@ -1,0 +1,9 @@
+{% extends base_template %}
+{% block content %}
+    <h2>Удаление ингредиента</h2>
+    <form class="form" method="post">
+        <p>Вы действительно хотите удалить ингрединет "{{ item.name }}"?</p>
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{{ url_for('.home') }}" class="btn btn-secondary">Отмена</a>
+    <form>
+{% endblock %}

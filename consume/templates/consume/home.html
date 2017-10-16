@@ -1,0 +1,92 @@
+{% extends base_template %}
+{% block css %}
+    {{ super() }}
+    <style type="text/css">
+    .consume-details {
+        display: none;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <a class="btn btn-sm align-middle btn-outline-primary" href="{{ url_for('.add') }}">
+                <i class="fa fa-plus"></i>&nbsp;Добавить расход
+            </a>
+        </form>
+    </nav>
+    <table class="table">
+        <thead>
+            <th>#</th>
+            <th>Дата и время</th>
+            <th>Продукт</th>
+            <th>Порций</th>
+            <th>Стоимость</th>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                <a href="#" class="show-details">{{ i.datetime }}</a>
+            </td>
+            <td>
+                {% set techmap = i.techmap_id|techmap %}
+                {{ techmap.name }}
+            </td>
+            <td>{{ i.consumers|length }}</td>
+            <td>{{ '%0.2f' % i.total|float }} руб. ({{ '%0.2f' % (i.total/(i.consumers|length))|float }} руб/порция)</td>
+        </tr>
+        <tr class="consume-details">
+            <td></td>
+            <td colspan="4">
+                <small>
+                    <table class="table table-sm">
+                        <thead>
+                            <th>Ингредиент</th>
+                            <th>Количество / цена</th>
+                            <th>Стоимость</th>
+                        </thead>
+                    {% for s in i.supplies %}
+                        <tr>
+                            <td>{{ s.ingredient_name }}</td>
+                            <td>{{ s.amount }} {{ s.ingredient_units }} &times; {{ '%0.2f' % s.price_per_unit|float }} руб.</td>
+                            <td>{{ '%0.2f' % (s.amount*s.price_per_unit)|float }} руб.</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td align="right">
+                            <strong>Итого:</strong>
+                        </td>
+                        <td>
+                            {{ '%0.2f' % i.total|float }} руб.
+                        </td>
+                    </tr>
+                    </table>
+                </small>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">
+                <i>Список расходов пуст.</i>
+                <a href="{{ url_for('.add') }}">Добавить расход</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block js %}
+    {{ super() }}
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('.show-details').click(function(){
+            var $tr = $(this).parentsUntil('tbody');
+            $tr = $($tr[$tr.length-1]);
+            $tr.next().toggle();
+        });
+    });
+    </script>
+{% endblock %}

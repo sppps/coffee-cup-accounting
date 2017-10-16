@@ -1,0 +1,73 @@
+{% extends base_template %}
+{% block content %}
+    {% set _all_consumers = all_consumers|list %}
+    {% macro render_consumer(form, index='%index%', subform=None) %}
+        <div class="form-group row">
+            <div class="col-6">
+                <select class="form-control"
+                    name="consumers-{{ index }}-consumer_id">
+                    <option value=""></option>
+                {% for i in _all_consumers %}
+                    <option value="{{ i._id }}" {% if subform and subform.consumer_id.data|string == i._id|string %}selected{% endif %}>{{ i.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <button class="btn btn-outline-danger remove-consumer" type="button">
+                    <i class="fa fa-trash"></i>&nbsp;Удалить</button>
+            </div>
+        </div>
+    {% endmacro %}
+    <h2>Новый расход</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>Продукт</label>
+            <select class="form-control {% if form.techmap_id.errors %}is-invalid{% endif %}"
+                name="techmap_id"
+                autocomplete="off"
+                autofocus="yes">
+                <option value=""></option>
+            {% for i in all_techmaps %}
+                <option value="{{ i._id }}" {% if form.techmap_id.data|string == i._id|string %}selected{% endif %}>{{ i.category }} / {{ i.name }}</option>
+            {% endfor %}
+            </select>
+            {% for e in form.techmap_id.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <legend>Потребители</legend>
+        <fieldset id="consumers">
+            {% for i in form.consumers %}
+                {{ render_consumer(form, loop.index0, i.form) }}
+            {% endfor %}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-success add-consumer" type="button">
+                <i class="fa fa-plus"></i>&nbsp;Добавить потребителя</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+    <script type="x-template/text" id="consumer-template">
+        {{ render_consumer(form) }}
+    </script>
+{% endblock %}
+{% block js %}
+    {{ super() }}
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('button.add-consumer').on('click', function(e){
+            e.preventDefault();
+            var html = $('#consumer-template').html();
+            html = html.split('%index%').join($('#consumers').children().length);
+            $('#consumers').append(html);
+        });
+        $(document).on('click', 'button.remove-consumer', function(e){
+            e.preventDefault();
+            $(this).parentsUntil('fieldset').remove();
+        });
+    });
+    </script>
+{% endblock %}

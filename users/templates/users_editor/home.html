@@ -1,0 +1,39 @@
+{% extends base_template %}
+{% block content %}
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <a class="btn btn-sm align-middle btn-outline-primary" href="{{ url_for('.add') }}">
+                <i class="fa fa-plus"></i>&nbsp;Добавить пользователя
+            </a>
+        </form>
+    </nav>
+    <table class="table">
+        <thead>
+            <th>#</th>
+            <th>Имя пользователя</th>
+            <th></th>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                <a href="{{ url_for('.edit', _id=i._id) }}">{{ i.username }}</a>
+            </td>
+            <td>
+                <a href="{{ url_for('.remove', _id=i._id) }}">
+                    <i class="fa fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">
+                <i>Список доступных технологических карт пуст.</i>
+                <a href="{{ url_for('.add') }}">Добавить пользователя</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

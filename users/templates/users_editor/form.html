@@ -1,0 +1,28 @@
+{% extends base_template %}
+{% block content %}
+    <h2>Новый пользователь</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>Имя пользователя</label>
+            <input class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                placeholder="Имя пользователя"
+                value="{{ form.username.data or '' }}"
+                name="username"
+                autocomplete="off"
+                autofocus="yes">
+            {% for e in form.username.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="is_active" {% if form.is_active.data %}checked{% endif %}>
+                пользователь активен
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+{% endblock %}
