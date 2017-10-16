@@ -1,7 +1,7 @@
 import os
 
 on_heroku = False
-if 'DATABASE_URL' in os.environ and 'SECRET_KEY' in os.environ:
+if 'MONGODB_URI' in os.environ and 'SECRET_KEY' in os.environ:
     on_heroku = True
 
 if on_heroku:
