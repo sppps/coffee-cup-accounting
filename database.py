@@ -7,5 +7,5 @@ def init_app(app):
     db = pymongo.MongoClient(mongodb_uri).get_database()
     admin_user = users.login.User.find(db, username='admin')
     if admin_user is None:
-        users.User.create(db, username='admin', password='123456')
+        users.login.User.create(db, username='admin', password='123456')
     app.config['db'] = db
