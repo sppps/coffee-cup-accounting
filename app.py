@@ -8,8 +8,11 @@ import techmaps
 import ingredients
 import consume
 import consumers
+# import atexit
+# import rpc.coffee_cup
 from flask import Flask, render_template
 from flask_login import LoginManager, login_required
+
 
 from werkzeug.routing import BaseConverter, ValidationError
 from itsdangerous import base64_encode, base64_decode
@@ -56,6 +59,12 @@ def create_app():
     app.register_blueprint(ingredients.create_blueprint(), url_prefix="/ingredients")
     app.register_blueprint(techmaps.create_blueprint(), url_prefix="/techmaps")
     app.register_blueprint(users.create_blueprint(), url_prefix="/users")
+
+    # rpc_server = rpc.coffee_cup.start(app.config['db'])
+
+    # def close_rpc_server():
+    #     rpc_server.stop(0)
+    # atexit.register(close_rpc_server)
 
     return app
 
