@@ -1,4 +1,6 @@
 import passlib.context
+import binascii
+import os
 from flask import Blueprint, request, redirect, url_for, current_app as app, render_template
 from flask_login import login_required, login_user, logout_user
 
@@ -36,6 +38,17 @@ class User(object):
 
     def check_password(self, password):
         return crypto_ctx.verify(self.username+password, self.pwdhash)
+
+    def refresh_access_token(self, db):
+        access_token = binascii.hexlify(os.urandom(64)).decode()
+        db.users.update({
+            '_id': self.user_id
+            }, {
+            '$set': {
+                'access_token': access_token
+            }
+            })
+        return access_token
 
 
 def create_blueprint():

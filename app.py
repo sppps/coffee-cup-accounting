@@ -8,6 +8,7 @@ import techmaps
 import ingredients
 import consume
 import consumers
+import api
 # import atexit
 # import rpc.coffee_cup
 from flask import Flask, render_template
@@ -59,6 +60,7 @@ def create_app():
     app.register_blueprint(ingredients.create_blueprint(), url_prefix="/ingredients")
     app.register_blueprint(techmaps.create_blueprint(), url_prefix="/techmaps")
     app.register_blueprint(users.create_blueprint(), url_prefix="/users")
+    app.register_blueprint(api.create_blueprint(), url_prefix="/api/v1")
 
     # rpc_server = rpc.coffee_cup.start(app.config['db'])
 

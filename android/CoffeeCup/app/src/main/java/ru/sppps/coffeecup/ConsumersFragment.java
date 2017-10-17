@@ -45,7 +45,7 @@ public class ConsumersFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("https://coffee-cup-accounting.herokuapp.com/");
+                URL url = new URL("https://coffee-cup-accounting.herokuapp.com/api/v1/");
 
                 Context context = getActivity();
                 SharedPreferences sharedPref = context.getSharedPreferences(
