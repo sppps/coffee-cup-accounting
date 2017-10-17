@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ru.sppps.coffeecup";
+option java_outer_classname = "RouteGuideProto";
+option objc_class_prefix = "RTG";
+
+package coffeecup;
+
+
+service CoffeeCupConsumers {
+    rpc ListConsumers(Empty) returns (stream Consumer) {}
+}
+
+message Empty {
+
+}
+
+message Consumer {
+  string id = 1;
+  string name = 2;
+  float debt = 3;
+}
