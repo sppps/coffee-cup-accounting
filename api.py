@@ -39,7 +39,7 @@ def create_blueprint():
             success=True,
             access_token=user.refresh_access_token(db))
 
-    @bp.route('/consumers/list')
+    @bp.route('/consumers/list', methods=['GET', 'POST'])
     @auth_required
     def consumers_list():
         db = app.config['db']
