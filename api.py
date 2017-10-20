@@ -51,4 +51,55 @@ def create_blueprint():
             } for c in db.consumers.find({})
             ]})
 
+    @bp.route('/supply/list', methods=['GET', 'POST'])
+    @auth_required
+    def supply_list():
+        db = app.config['db']
+        return jsonify({
+            'consumers': [{
+                'id': str(c['_id']),
+                'supply_amount': c['supply_amount'],
+                'current_amount': c['current_amount'],
+                'price': c['price'],
+                'ingredient_id': c['ingredient_id'],
+            } for c in db.supply.find({})
+            ]})
+
+    @bp.route('/consume/list', methods=['GET', 'POST'])
+    @auth_required
+    def consume_list():
+        db = app.config['db']
+        return jsonify({
+            'consumers': [{
+                'id': str(c['_id']),
+                'total': c['total'],
+                'techmap_id': c['techmap_id'],
+            } for c in db.consume.find({})
+            ]})
+
+    @bp.route('/ingredients/list', methods=['GET', 'POST'])
+    @auth_required
+    def ingredients_list():
+        db = app.config['db']
+        return jsonify({
+            'consumers': [{
+                'id': str(c['_id']),
+                'category': c['category'],
+                'name': c['name'],
+                'units': c['units'],
+            } for c in db.ingredients.find({})
+            ]})
+
+    @bp.route('/techmaps/list', methods=['GET', 'POST'])
+    @auth_required
+    def techmaps_list():
+        db = app.config['db']
+        return jsonify({
+            'consumers': [{
+                'id': str(c['_id']),
+                'category': c['category'],
+                'name': c['name'],
+            } for c in db.techmaps.find({})
+            ]})
+
     return bp
