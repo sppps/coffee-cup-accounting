@@ -9,6 +9,8 @@
         <item>Techmaps</item>
     </string-array>
     <string name="title_activity_login">Sign in</string>
+    <string name="add_consumer_title">New consumer</string>
+    <string name="edit_consumer_title">Edit consumer</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
@@ -25,4 +27,9 @@
 
     <!-- API urls -->
     <string name="api_url_base">https://coffee-cup-accounting.herokuapp.com/api/v1/</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+
+    <!-- Messages -->
+    <string name="msg_enter_consumer_name">Consumer name must be at least 3 charactes long</string>
 </resources>

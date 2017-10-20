@@ -1,47 +1,41 @@
 package ru.sppps.coffeecup;
 
-import android.app.ActivityOptions;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.View;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.Intent;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.*;
-import java.io.*;
 import java.util.ArrayList;
 
-import ru.sppps.coffeecup.R;
 import ru.sppps.coffeecup.models.Consumer;
 
 import static android.app.Activity.RESULT_OK;
 
 
-public class ConsumersFragment extends Fragment implements ListView.OnItemClickListener {
+public class BaseModelsListFragment
+        extends Fragment
+        implements ListView.OnItemClickListener {
     ArrayList<Consumer> listItems = new ArrayList<Consumer>();
     ArrayAdapter<Consumer> adapter;
 
     private ListView mListView = null;
+    private String mApiMethod = null;
 
-    public ConsumersFragment() {
-
-    }
+    public BaseModelsListFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -51,6 +45,7 @@ public class ConsumersFragment extends Fragment implements ListView.OnItemClickL
         mListView.setOnItemClickListener(this);
         adapter = new ArrayAdapter<Consumer>(getContext(), R.layout.consumer_list_item, R.id.label, listItems);
         mListView.setAdapter(adapter);
+        mApiMethod = getArguments().getString("apiMethod");
         new FetchConsumersList(getContext()).execute();
         return rootView;
     }
@@ -96,7 +91,7 @@ public class ConsumersFragment extends Fragment implements ListView.OnItemClickL
 
     private class FetchConsumersList extends BaseJsonApiTask {
         FetchConsumersList (Context context) {
-            super(context, "consumers/list");
+            super(context, mApiMethod);
         }
         protected void onPostExecute(final JSONObject response) {
             if (response != null) {
