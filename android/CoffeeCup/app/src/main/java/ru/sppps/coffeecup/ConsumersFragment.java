@@ -1,118 +1,21 @@
 package ru.sppps.coffeecup;
 
-import android.app.ActivityOptions;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.view.View;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.Intent;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.*;
-import java.io.*;
-import java.util.ArrayList;
-
-import ru.sppps.coffeecup.R;
 import ru.sppps.coffeecup.models.Consumer;
 
-import static android.app.Activity.RESULT_OK;
+public class ConsumersFragment extends BaseModelsListFragment<Consumer> {
 
+    protected String getApiMethod() {
+        return "consumers/list";
+    }
 
-public class ConsumersFragment extends Fragment implements ListView.OnItemClickListener {
-    ArrayList<Consumer> listItems = new ArrayList<Consumer>();
-    ArrayAdapter<Consumer> adapter;
-
-    private ListView mListView = null;
-
-    public ConsumersFragment() {
+    protected void prepateIntentForEdit(Intent intent, Consumer consume) {
 
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.consumers_layout, container, false);
-        mListView = (ListView)rootView.findViewById(R.id.consumers_list);
-        mListView.setOnItemClickListener(this);
-        adapter = new ArrayAdapter<Consumer>(getContext(), R.layout.consumer_list_item, R.id.label, listItems);
-        mListView.setAdapter(adapter);
-        new FetchConsumersList(getContext()).execute();
-        return rootView;
-    }
-
-    @Override
-    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.consumers_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_consumer:
-                Intent intent = new Intent(getContext(), ConsumerActivity.class);
-                startActivityForResult(intent, 1);
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(getContext(), "GOOD!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getContext(), ConsumerActivity.class);
-        intent.setAction(Intent.ACTION_EDIT);
-        Consumer consumer = listItems.get(position);
-        intent.putExtra("name", consumer.getName());
-        intent.putExtra("debt", consumer.getDebt());
-        getActivity().startActivityForResult(intent, 2);
-        getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
-    }
-
-    private class FetchConsumersList extends BaseJsonApiTask {
-        FetchConsumersList (Context context) {
-            super(context, "consumers/list");
-        }
-        protected void onPostExecute(final JSONObject response) {
-            if (response != null) {
-                Log.d("LOG", response.toString());
-                try{
-                    JSONArray consumers = response.getJSONArray("consumers");
-                    listItems.clear();
-                    for(int i=0; i<consumers.length(); i++) {
-                        listItems.add(Consumer.fromJsonObject(consumers.getJSONObject(i)));
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-                catch (org.json.JSONException e) {
-
-                }
-            }
-        }
+    protected Consumer createModelInstanceFromJson(JSONObject json)
+    {
+        return Consumer.fromJsonObject(json);
     }
 }

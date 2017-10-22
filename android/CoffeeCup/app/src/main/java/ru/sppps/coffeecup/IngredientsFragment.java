@@ -1,21 +1,22 @@
 package ru.sppps.coffeecup;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.view.View;
-import ru.sppps.coffeecup.R;
+import android.content.Intent;
+import org.json.JSONObject;
+import ru.sppps.coffeecup.models.Ingredient;
 
 
-public class IngredientsFragment extends Fragment {
+public class IngredientsFragment extends BaseModelsListFragment<Ingredient> {
 
-    public IngredientsFragment() {
+    protected String getApiMethod() {
+        return "ingredients/list";
+    }
+
+    protected void prepateIntentForEdit(Intent intent, Ingredient consume) {
 
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View rootView = inflater.inflate(R.layout.ingredients_layout, container, false);
-        return rootView;
+
+    protected Ingredient createModelInstanceFromJson(JSONObject json)
+    {
+        return Ingredient.fromJsonObject(json);
     }
 }

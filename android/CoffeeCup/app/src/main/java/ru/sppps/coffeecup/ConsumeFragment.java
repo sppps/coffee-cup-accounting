@@ -1,21 +1,22 @@
 package ru.sppps.coffeecup;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.view.View;
-import ru.sppps.coffeecup.R;
+import android.content.Intent;
 
+import org.json.JSONObject;
 
-public class ConsumeFragment extends Fragment {
+import ru.sppps.coffeecup.models.Consume;
 
-    public ConsumeFragment() {
+public class ConsumeFragment extends BaseModelsListFragment<Consume> {
+    protected String getApiMethod() {
+        return "consume/list";
+    }
+
+    protected void prepateIntentForEdit(Intent intent, Consume consume) {
 
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View rootView = inflater.inflate(R.layout.consume_layout, container, false);
-        return rootView;
+
+    protected Consume createModelInstanceFromJson(JSONObject json)
+    {
+        return Consume.fromJsonObject(json);
     }
 }

@@ -26,16 +26,19 @@ import ru.sppps.coffeecup.models.Consumer;
 import static android.app.Activity.RESULT_OK;
 
 
-public class BaseModelsListFragment
+public abstract class BaseModelsListFragment<T>
         extends Fragment
         implements ListView.OnItemClickListener {
-    ArrayList<Consumer> listItems = new ArrayList<Consumer>();
-    ArrayAdapter<Consumer> adapter;
+    ArrayList<T> listItems = new ArrayList<T>();
+    ArrayAdapter<T> adapter;
 
     private ListView mListView = null;
-    private String mApiMethod = null;
 
     public BaseModelsListFragment() {}
+
+    protected abstract T createModelInstanceFromJson(JSONObject json);
+    protected abstract void prepateIntentForEdit(Intent intent, T item);
+    protected abstract String getApiMethod();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -43,9 +46,8 @@ public class BaseModelsListFragment
         View rootView = inflater.inflate(R.layout.consumers_layout, container, false);
         mListView = (ListView)rootView.findViewById(R.id.consumers_list);
         mListView.setOnItemClickListener(this);
-        adapter = new ArrayAdapter<Consumer>(getContext(), R.layout.consumer_list_item, R.id.label, listItems);
+        adapter = new ArrayAdapter<T>(getContext(), R.layout.consumer_list_item, R.id.label, listItems);
         mListView.setAdapter(adapter);
-        mApiMethod = getArguments().getString("apiMethod");
         new FetchConsumersList(getContext()).execute();
         return rootView;
     }
@@ -82,16 +84,17 @@ public class BaseModelsListFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getContext(), ConsumerActivity.class);
         intent.setAction(Intent.ACTION_EDIT);
-        Consumer consumer = listItems.get(position);
-        intent.putExtra("name", consumer.getName());
-        intent.putExtra("debt", consumer.getDebt());
+        T item = listItems.get(position);
+        prepateIntentForEdit(intent, item);
+//        intent.putExtra("name", consumer.getName());
+//        intent.putExtra("debt", consumer.getDebt());
         getActivity().startActivityForResult(intent, 2);
         getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
     }
 
     private class FetchConsumersList extends BaseJsonApiTask {
         FetchConsumersList (Context context) {
-            super(context, mApiMethod);
+            super(context, getApiMethod());
         }
         protected void onPostExecute(final JSONObject response) {
             if (response != null) {
@@ -100,7 +103,8 @@ public class BaseModelsListFragment
                     JSONArray consumers = response.getJSONArray("consumers");
                     listItems.clear();
                     for(int i=0; i<consumers.length(); i++) {
-                        listItems.add(Consumer.fromJsonObject(consumers.getJSONObject(i)));
+                        JSONObject json = consumers.getJSONObject(i);
+                        listItems.add(createModelInstanceFromJson(json));
                     }
                     adapter.notifyDataSetChanged();
                 }

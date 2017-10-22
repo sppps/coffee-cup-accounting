@@ -17,11 +17,11 @@ import java.net.URL;
 
 
 public class BaseJsonApiTask extends AsyncTask<Void, Void, JSONObject> {
-    protected HttpURLConnection urlConnection = null;
     private BufferedReader reader = null;
-    protected Context mContext = null;
     private JSONObject response = null;
     private String mMethod = null;
+    protected HttpURLConnection urlConnection = null;
+    protected Context mContext = null;
     final private String LOG_TAG = "BaseJsonApiTask";
 
     public BaseJsonApiTask(Context context, String method) {

@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.view.View;
 
+import ru.sppps.coffeecup.models.Consumer;
+
 public class MainActivity extends AppCompatActivity implements ListView.OnItemClickListener {
     private String[] mDrawerItems;
     private ListView mDrawerListView;
@@ -94,18 +96,27 @@ public class MainActivity extends AppCompatActivity implements ListView.OnItemCl
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Bundle args = new Bundle();
+        Fragment fragment;
         switch(position){
-            case 0: args.putString("apiMethod", "consume/list"); break;
-            case 1: args.putString("apiMethod", "supply/list"); break;
-            case 2: args.putString("apiMethod", "consumers/list"); break;
-            case 3: args.putString("apiMethod", "ingredients/list"); break;
-            case 4: args.putString("apiMethod", "techmaps/list"); break;
+            case 0:
+                fragment = new ConsumeFragment();
+                break;
+            case 1:
+                fragment = new SupplyFragment();
+                break;
+            case 2:
+                fragment = new ConsumersFragment();
+                break;
+            case 3:
+                fragment = new IngredientsFragment();
+                break;
+            case 4:
+                fragment = new TechmapsFragment();
+                break;
             default: return;
         }
+        Bundle args = new Bundle();
         args.putInt("menu", position);
-
-        Fragment fragment = new BaseModelsListFragment();
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
