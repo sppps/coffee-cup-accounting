@@ -90,3 +90,4 @@ class GenericEditor(object):
             'success': True,
             'items': list(collection.find({}))
             })
+    list_items.methods = ['GET', 'POST']
