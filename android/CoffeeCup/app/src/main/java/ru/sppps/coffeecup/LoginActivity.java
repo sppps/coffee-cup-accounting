@@ -305,7 +305,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mPassword;
 
         ApiAuthTask(Context context, String username, String password) {
-            super(context, "auth");
+            super(context, "/api/auth");
             mUsername = username;
             mPassword = password;
         }

@@ -7,7 +7,7 @@ import ru.sppps.coffeecup.models.Consumer;
 public class ConsumersFragment extends BaseModelsListFragment<Consumer> {
 
     protected String getApiMethod() {
-        return "consumers/list";
+        return "/api/consumers/list";
     }
 
     protected void prepateIntentForEdit(Intent intent, Consumer consume) {

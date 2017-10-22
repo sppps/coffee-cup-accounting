@@ -11,7 +11,7 @@ import ru.sppps.coffeecup.models.Supply;
 public class SupplyFragment extends BaseModelsListFragment<Supply> {
 
     protected String getApiMethod() {
-        return "supply/list";
+        return "/api/supply/list";
     }
 
     protected void prepateIntentForEdit(Intent intent, Supply supply) {

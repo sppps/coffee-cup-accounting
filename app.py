@@ -8,10 +8,10 @@ import techmaps
 import ingredients
 import consume
 import consumers
-import api
 # import atexit
 # import rpc.coffee_cup
 from flask import Flask, render_template
+from flask.json import JSONEncoder
 from flask_login import LoginManager, login_required
 
 
@@ -32,10 +32,18 @@ class ObjectIDConverter(BaseConverter):
         return base64_encode(value.binary)
 
 
+class CustomJsonEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        return JSONEncoder.default(self, obj)
+
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
     app.url_map.converters['ObjectId'] = ObjectIDConverter
+    app.json_encoder = CustomJsonEncoder
 
     database.init_app(app)
 
@@ -48,19 +56,26 @@ def create_app():
         db = app.config['db']
         return users.login.User.find(db, _id=bson.ObjectId(user_id))
 
+    @login_manager.request_loader
+    def load_user_from_request(request):
+        access_token = request.headers.get('X-Access-Token') or request.args.get('access_token')
+        if access_token is not None:
+            pass
+        db = app.config['db']
+        return users.login.User.find(db, access_token=access_token)
+
     @app.route('/')
     @login_required
     def home():
         return render_template('home.html')
 
     app.register_blueprint(users.login.create_blueprint())
-    app.register_blueprint(consume.create_blueprint(), url_prefix="/consume")
-    app.register_blueprint(consumers.create_blueprint(), url_prefix="/consumers")
-    app.register_blueprint(supply.create_blueprint(), url_prefix="/supply")
-    app.register_blueprint(ingredients.create_blueprint(), url_prefix="/ingredients")
-    app.register_blueprint(techmaps.create_blueprint(), url_prefix="/techmaps")
-    app.register_blueprint(users.create_blueprint(), url_prefix="/users")
-    app.register_blueprint(api.create_blueprint(), url_prefix="/api/v1")
+    app.register_blueprint(consume.create_blueprint())
+    app.register_blueprint(consumers.create_blueprint())
+    app.register_blueprint(supply.create_blueprint())
+    app.register_blueprint(ingredients.create_blueprint())
+    app.register_blueprint(techmaps.create_blueprint())
+    app.register_blueprint(users.create_blueprint())
 
     # rpc_server = rpc.coffee_cup.start(app.config['db'])
 

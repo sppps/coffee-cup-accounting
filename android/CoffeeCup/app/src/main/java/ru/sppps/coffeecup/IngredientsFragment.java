@@ -8,7 +8,7 @@ import ru.sppps.coffeecup.models.Ingredient;
 public class IngredientsFragment extends BaseModelsListFragment<Ingredient> {
 
     protected String getApiMethod() {
-        return "ingredients/list";
+        return "/api/ingredients/list";
     }
 
     protected void prepateIntentForEdit(Intent intent, Ingredient consume) {

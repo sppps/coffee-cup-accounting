@@ -27,7 +27,7 @@ public class Ingredient {
     public static Ingredient fromJsonObject(JSONObject json) {
         try {
             Ingredient ingredient = new Ingredient();
-            ingredient.setId(json.getString("id"));
+            ingredient.setId(json.getString("_id"));
             ingredient.setCategory(json.getString("category"));
             ingredient.setName(json.getString("name"));
             ingredient.setUnits(json.getString("units"));

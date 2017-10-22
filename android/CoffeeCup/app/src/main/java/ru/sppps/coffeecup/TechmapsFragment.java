@@ -10,7 +10,7 @@ import ru.sppps.coffeecup.models.TechMap;
 public class TechmapsFragment extends BaseModelsListFragment<TechMap> {
 
     protected String getApiMethod() {
-        return "techmaps/list";
+        return "/api/techmaps/list";
     }
 
     protected void prepateIntentForEdit(Intent intent, TechMap supply) {

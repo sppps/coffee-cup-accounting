@@ -26,7 +26,7 @@
     </string>
 
     <!-- API urls -->
-    <string name="api_url_base">https://coffee-cup-accounting.herokuapp.com/api/v1/</string>
+    <string name="api_url_base">https://coffee-cup-accounting.herokuapp.com</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
 

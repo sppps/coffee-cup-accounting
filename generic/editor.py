@@ -1,15 +1,18 @@
 from flask import Blueprint, render_template as flask_render_template, url_for, redirect
-from flask import current_app as app, abort, request
+from flask import current_app as app, abort, request, jsonify
+from flask_login import login_required
 
 
 class GenericEditor(object):
     def __init__(self, name, import_name, collection_name=None):
         self.collection_name = collection_name or name
         self.blueprint = Blueprint(name, import_name, template_folder='templates')
-        self.blueprint.add_url_rule('/', view_func=self.home)
-        self.blueprint.add_url_rule('/add/', view_func=self.add)
-        self.blueprint.add_url_rule('/edit/<ObjectId:_id>', view_func=self.edit)
-        self.blueprint.add_url_rule('/remove/<ObjectId:_id>', view_func=self.remove)
+        self.blueprint.add_url_rule('/%s/' % name, view_func=self.home)
+        self.blueprint.add_url_rule('/%s/add/' % name, view_func=self.add)
+        self.blueprint.add_url_rule('/%s/edit/<ObjectId:_id>' % name, view_func=self.edit)
+        self.blueprint.add_url_rule('/%s/remove/<ObjectId:_id>' % name, view_func=self.remove)
+        # API
+        self.blueprint.add_url_rule('/api/%s/list' % name, view_func=self.list_items)
 
     def _on_before_item_create(self, item):
         pass
@@ -30,10 +33,12 @@ class GenericEditor(object):
         kwargs['base_template'] = '/'.join([self.blueprint.name, 'base.html'])
         return flask_render_template('/'.join([self.blueprint.name, template_name]), *args, **kwargs)
 
+    @login_required
     def home(self):
         collection = app.config['db'][self.collection_name]
         return self._render_template('home.html', items=collection.find({}))
 
+    @login_required
     def add(self):
         collection = app.config['db'][self.collection_name]
         form = self._create_form()
@@ -48,6 +53,7 @@ class GenericEditor(object):
         return self._render_template('form.html', form=form)
     add.methods = ['GET', 'POST']
 
+    @login_required
     def edit(self, _id):
         collection = app.config['db'][self.collection_name]
         item_data = collection.find_one(_id)
@@ -62,6 +68,7 @@ class GenericEditor(object):
         return self._render_template('form.html', form=form)
     edit.methods = ['GET', 'POST']
 
+    @login_required
     def remove(self, _id):
         collection = app.config['db'][self.collection_name]
         item_data = collection.find_one(_id)
@@ -73,3 +80,13 @@ class GenericEditor(object):
             return redirect(url_for('.home'))
         return self._render_template('remove.html', item=item_data)
     remove.methods = ['GET', 'POST']
+
+    # API methods
+
+    @login_required
+    def list_items(self):
+        collection = app.config['db'][self.collection_name]
+        return jsonify({
+            'success': True,
+            'items': list(collection.find({}))
+            })

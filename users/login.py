@@ -1,7 +1,7 @@
 import passlib.context
 import binascii
 import os
-from flask import Blueprint, request, redirect, url_for, current_app as app, render_template
+from flask import Blueprint, request, redirect, url_for, current_app as app, render_template, jsonify
 from flask_login import login_required, login_user, logout_user
 
 crypto_ctx = passlib.context.CryptContext(schemes=["sha256_crypt"])
@@ -73,5 +73,23 @@ def create_blueprint():
     def logout():
         logout_user()
         return redirect(url_for('home'))
+
+    @bp.route('/api/auth', methods=['GET', 'POST'])
+    def auth():
+        db = app.config['db']
+        username = request.form.get('username') or \
+            request.args.get('username') or \
+            request.headers.get('x-auth-username')
+        password = request.form.get('password') or \
+            request.args.get('password') or \
+            request.headers.get('x-auth-password')
+        user = User.find(db, username=username)
+        if user is None:
+            return jsonify(success=False, message='User not found'), 401
+        if not user.check_password(password):
+            return jsonify(success=False, message='Wrong password'), 401
+        return jsonify(
+            success=True,
+            access_token=user.refresh_access_token(db))
 
     return bp

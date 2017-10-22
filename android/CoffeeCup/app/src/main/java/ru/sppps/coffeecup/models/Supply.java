@@ -21,7 +21,7 @@ public class Supply {
     public static Supply fromJsonObject(JSONObject json) {
         try {
             Supply supply = new Supply();
-            supply.mId = json.getString("id");
+            supply.mId = json.getString("_id");
             return supply;
         }
         catch(org.json.JSONException e) {

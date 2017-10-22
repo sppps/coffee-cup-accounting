@@ -8,7 +8,7 @@ import ru.sppps.coffeecup.models.Consume;
 
 public class ConsumeFragment extends BaseModelsListFragment<Consume> {
     protected String getApiMethod() {
-        return "consume/list";
+        return "/api/consume/list";
     }
 
     protected void prepateIntentForEdit(Intent intent, Consume consume) {
