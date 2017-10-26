@@ -8,6 +8,7 @@ import techmaps
 import ingredients
 import consume
 import consumers
+import debts
 # import atexit
 # import rpc.coffee_cup
 from flask import Flask, render_template
@@ -75,6 +76,7 @@ def create_app():
     app.register_blueprint(supply.create_blueprint())
     app.register_blueprint(ingredients.create_blueprint())
     app.register_blueprint(techmaps.create_blueprint())
+    app.register_blueprint(debts.create_blueprint())
     app.register_blueprint(users.create_blueprint())
 
     # rpc_server = rpc.coffee_cup.start(app.config['db'])

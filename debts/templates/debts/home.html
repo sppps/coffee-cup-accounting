@@ -1,0 +1,59 @@
+{% extends base_template %}
+{% block css %}
+    {{ super() }}
+    <style type="text/css">
+    .consume-details {
+        display: none;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-light bg-light">
+        <form class="form-inline">
+            <a class="btn btn-sm align-middle btn-outline-primary" href="{{ url_for('.add') }}">
+                <i class="fa fa-plus"></i>&nbsp;Добавить долг
+            </a>
+        </form>
+    </nav>
+    <table class="table">
+        <thead>
+            <th>#</th>
+            <th>Дата и время</th>
+            <th>Потребитель</th>
+            <th>Описание</th>
+            <th>Сумма</th>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                <a href="#" class="show-details">{{ i.datetime }}</a>
+            </td>
+            <td>{{ (i.consumer_id|consumer).name }}</td>
+            <td>{{ i.comments }}</td>
+            <td>{{ '%0.2f' % i.price|float }} руб.</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">
+                <i>Список долгов пуст.</i>
+                <a href="{{ url_for('.add') }}">Добавить долг</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block js %}
+    {{ super() }}
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $('.show-details').click(function(){
+            var $tr = $(this).parentsUntil('tbody');
+            $tr = $($tr[$tr.length-1]);
+            $tr.next().toggle();
+        });
+    });
+    </script>
+{% endblock %}

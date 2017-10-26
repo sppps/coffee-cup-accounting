@@ -1,6 +1,7 @@
 import forms
 from flask import current_app as app
 from generic.editor import GenericEditor
+from bson import ObjectId
 
 
 class ConsumersEditor(GenericEditor):
@@ -8,10 +9,13 @@ class ConsumersEditor(GenericEditor):
     def __init__(self, *args, **kwargs):
         super(ConsumersEditor, self).__init__(*args, **kwargs)
         self.blueprint.app_context_processor(self._context_processor)
+        self.blueprint.add_app_template_filter(self._consumer, name='consumer')
+
+    def _consumer(self, _id):
+        return app.config['db'].consumers.find_one(ObjectId(_id))
 
     def _create_form(self, *args, **kwargs):
-        form = forms.ConsumerForm(*args, **kwargs)
-        return form
+        return forms.ConsumerForm(*args, **kwargs)
 
     def _context_processor(self):
         return {

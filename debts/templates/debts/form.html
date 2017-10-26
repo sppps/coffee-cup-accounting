@@ -1,0 +1,31 @@
+{% extends base_template %}
+{% block content %}
+    {% import 'form.macros.html' as macros %}
+    {% set _all_consumers = all_consumers|list %}
+    <h2>Новый долг</h2>
+    <form class="form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label>Потребитель</label>
+            <select class="form-control {% if form.consumer_id.errors %}is-invalid{% endif %}"
+                name="consumer_id"
+                autocomplete="off"
+                autofocus="yes">
+                <option value=""></option>
+            {% for i in _all_consumers %}
+                <option value="{{ i._id }}" {% if form.consumer_id.data|string == i._id|string %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+            </select>
+            {% for e in form.consumer_id.errors %}
+            <div class="invalid-feedback">
+                {{ e }}
+            </div>
+            {% endfor %}
+        </div>
+
+        {{ macros.render_field(form.price) }}
+        {{ macros.render_field(form.comments) }}
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    <form>
+{% endblock %}
