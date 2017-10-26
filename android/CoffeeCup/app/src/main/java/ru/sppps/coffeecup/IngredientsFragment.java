@@ -7,6 +7,10 @@ import ru.sppps.coffeecup.models.Ingredient;
 
 public class IngredientsFragment extends BaseModelsListFragment<Ingredient> {
 
+    public IngredientsFragment() {
+        mListItemId = R.layout.list_item_ingredient;
+    }
+
     protected String getApiMethod() {
         return "/api/ingredients/list";
     }

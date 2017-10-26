@@ -1,13 +1,6 @@
 <resources>
     <string name="preference_file_key">ru.sppps.coffeecup.SharedPreferences</string>
     <string name="app_name">Coffee Cup Accounting</string>
-    <string-array name="drawer_items">
-        <item>Consume</item>
-        <item>Supply</item>
-        <item>Consumers</item>
-        <item>Ingredients</item>
-        <item>Techmaps</item>
-    </string-array>
     <string name="title_activity_login">Sign in</string>
     <string name="add_consumer_title">New consumer</string>
     <string name="edit_consumer_title">Edit consumer</string>
@@ -32,4 +25,22 @@
 
     <!-- Messages -->
     <string name="msg_enter_consumer_name">Consumer name must be at least 3 charactes long</string>
+
+    <string-array name="drawer_items">
+        <item>Consume</item>
+        <item>Supply</item>
+        <item>Consumers</item>
+        <item>Ingredients</item>
+        <item>Techmaps</item>
+        <item>Logout</item>
+    </string-array>
+    <array name="drawer_icons">
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item></item>
+        <item>@drawable/consumer</item>
+    </array>
 </resources>

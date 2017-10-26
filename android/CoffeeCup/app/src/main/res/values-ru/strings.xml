@@ -1,12 +1,5 @@
 <resources>
     <string name="app_name">Учёт кофе</string>
-    <string-array name="drawer_items">
-        <item>Расход</item>
-        <item>Закупка</item>
-        <item>Потребители</item>
-        <item>Ингредиенты</item>
-        <item>Тех.карты</item>
-    </string-array>
     <string name="title_activity_login">Вход</string>
 
     <!-- Strings related to login -->
@@ -21,4 +14,22 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <string-array name="drawer_items">
+        <item>Расход</item>
+        <item>Закупка</item>
+        <item>Потребители</item>
+        <item>Ингредиенты</item>
+        <item>Тех.карты</item>
+        <item>Выход</item>
+    </string-array>
+    <array name="drawer_icons">
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item>@drawable/consumer</item>
+        <item></item>
+        <item>@drawable/consumer</item>
+    </array>
 </resources>

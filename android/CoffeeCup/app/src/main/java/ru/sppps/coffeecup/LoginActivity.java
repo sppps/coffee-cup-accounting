@@ -319,25 +319,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Boolean success = Boolean.FALSE;
             String accessToken = new String();
             String message = getString(R.string.error_incorrect_password);
-            try {
-                success = response.getBoolean("success");
-                accessToken = response.getString("access_token");
-                message = response.getString("message");
-            }
-            catch (org.json.JSONException e) {
-
-            }
-            if (success) {
-                SharedPreferences sharedPref = mContext.getSharedPreferences(
-                        mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                sharedPref
-                        .edit()
-                        .putString("AccessToken", accessToken)
-                        .commit();
-                finish();
-            } else {
+            if (response == null) {
                 mPasswordView.setError(message);
                 mPasswordView.requestFocus();
+            } else {
+                try {
+                    success = response.getBoolean("success");
+                    accessToken = response.getString("access_token");
+                    message = response.getString("message");
+                } catch (org.json.JSONException e) {
+
+                }
+                if (success) {
+                    mContext.getSharedPreferences(
+                            mContext.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                            .edit()
+                            .putString("AccessToken", accessToken)
+                            .commit();
+                    finish();
+                } else {
+                    mPasswordView.setError(message);
+                    mPasswordView.requestFocus();
+                }
             }
         }
     }

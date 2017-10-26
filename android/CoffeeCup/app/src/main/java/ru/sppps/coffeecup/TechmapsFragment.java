@@ -9,6 +9,10 @@ import ru.sppps.coffeecup.models.TechMap;
 
 public class TechmapsFragment extends BaseModelsListFragment<TechMap> {
 
+    public TechmapsFragment () {
+        mListItemId = R.layout.list_item_techmap;
+    }
+
     protected String getApiMethod() {
         return "/api/techmaps/list";
     }

@@ -25,7 +25,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:background="#000000">
+        android:background="#FFF"
+        android:divider="#666"
+        android:dividerHeight="1px">
     </ListView>
 </android.support.v4.widget.DrawerLayout>

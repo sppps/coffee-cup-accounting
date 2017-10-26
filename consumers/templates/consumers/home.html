@@ -15,13 +15,17 @@
             <th></th>
         </thead>
         <tbody>
+        {% set total_debt = 0.0 %}
         {% for i in items %}
         <tr>
             <td>{{ loop.index }}</td>
             <td>
                 <a href="{{ url_for('.edit', _id=i._id) }}">{{ i.name }}</a>
             </td>
-            <td>{{ '%0.2f' % i.debt|float }} руб.</td>
+            <td>
+                {{ '%0.2f' % i.debt|float }} руб.
+                {% set total_debt = total_debt + i.debt %}
+            </td>
             <td>
                 <a href="{{ url_for('.remove', _id=i._id) }}">
                     <i class="fa fa-trash"></i>
@@ -36,6 +40,19 @@
             </td>
         </tr>
         {% endfor %}
+        <tr>
+            <td>
+            </td>
+            <td>
+                <b>Итого:</b>
+            </td>
+            <td>
+                {{ '%0.2f' % total_debt|float }} руб.
+            </td>
+            <td>
+            </td>
+        </tr>
+        
         </tbody>
     </table>
 {% endblock %}

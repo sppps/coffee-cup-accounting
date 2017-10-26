@@ -1,7 +1,11 @@
 package ru.sppps.coffeecup;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,8 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import ru.sppps.coffeecup.models.Consumer;
-
 import static android.app.Activity.RESULT_OK;
 
 
@@ -33,6 +35,8 @@ public abstract class BaseModelsListFragment<T>
     ArrayAdapter<T> adapter;
 
     private ListView mListView = null;
+    private View mProgressView = null;
+    protected int mListItemId = R.layout.list_item_consumer;
 
     public BaseModelsListFragment() {}
 
@@ -43,12 +47,14 @@ public abstract class BaseModelsListFragment<T>
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.consumers_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_layout_base_models_list, container, false);
+        mProgressView = (View)rootView.findViewById(R.id.task_progress);
         mListView = (ListView)rootView.findViewById(R.id.consumers_list);
         mListView.setOnItemClickListener(this);
-        adapter = new ArrayAdapter<T>(getContext(), R.layout.consumer_list_item, R.id.label, listItems);
+        adapter = new ArrayAdapter<T>(getContext(), mListItemId, R.id.label, listItems);
         mListView.setAdapter(adapter);
         new FetchConsumersList(getContext()).execute();
+        showProgress(true);
         return rootView;
     }
 
@@ -86,10 +92,26 @@ public abstract class BaseModelsListFragment<T>
         intent.setAction(Intent.ACTION_EDIT);
         T item = listItems.get(position);
         prepateIntentForEdit(intent, item);
-//        intent.putExtra("name", consumer.getName());
-//        intent.putExtra("debt", consumer.getDebt());
         getActivity().startActivityForResult(intent, 2);
         getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
     private class FetchConsumersList extends BaseJsonApiTask {
@@ -97,10 +119,11 @@ public abstract class BaseModelsListFragment<T>
             super(context, getApiMethod());
         }
         protected void onPostExecute(final JSONObject response) {
+            showProgress(false);
             if (response != null) {
                 Log.d("LOG", response.toString());
                 try{
-                    JSONArray consumers = response.getJSONArray("consumers");
+                    JSONArray consumers = response.getJSONArray("items");
                     listItems.clear();
                     for(int i=0; i<consumers.length(); i++) {
                         JSONObject json = consumers.getJSONObject(i);
